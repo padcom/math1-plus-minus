@@ -34,16 +34,11 @@ const item = x => ({ value: x, digits: x.toString() })
 const calcData = sign => {
   const x = rnd(1000) + 1
   const y = rnd(x) + 1
-  const result = { x: item(x), y: item(y) }
-  if (sign === 0) {
-    result.sign = '+'
-    result.result = item(x + y)
-  } else {
-    result.sign = '-'
-    result.result = item(x - y)
+  return sign === 0 ? {
+    x, y, result: x + y, sign: '+'
+  } : {
+    x, y, result: x - y, sign: '-'
   }
-
-  return result
 }
 
 const stoi = s => s === '' ? 0 : Number.parseInt(s)
@@ -52,11 +47,12 @@ export default {
   name: 'app',
   data () {
     const { x, y, result, sign } = calcData(rnd(2) - 1)
-    const length = Math.max(result.digits.length, Math.max(x.digits.length, y.digits.length))
-    x.digits = x.digits.padStart(length).split('')
-    y.digits = y.digits.padStart(length).split('')
-    result.digits = result.digits.padStart(length).split('')
-    return { length, x, y, result, sign, message: '', status: '' }
+    const data = { sign, x: item(x), y: item(y), result: item(result), message: '', status: '' }
+    data.length = Math.max(data.result.digits.length, Math.max(data.x.digits.length, data.y.digits.length))
+    data.x.digits = data.x.digits.padStart(data.length).split('')
+    data.y.digits = data.y.digits.padStart(data.length).split('')
+    data.result.digits = data.result.digits.padStart(data.length).split('')
+    return data
   },
   methods: {
     verify () {
